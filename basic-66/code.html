@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<title>Pay Me Project</title>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="styles/atom-one-dark.css">
+<link rel="stylesheet" href="styles/layout.css" type="text/css">
+<!--[if lt IE 9]><script src="scripts/html5shiv.js"></script><![endif]-->
+</head>
+<body>
+<header id="header" class="clear">
+  <div id="hgroup">
+    <h1><a href="#">Clasificación De Buenos Pagadores vs Malos Pagadores</a></h1>
+    <h1>Una aplicación en el contexto de Big Data</h1>
+  </div>
+  <nav>
+  </nav>
+  <div class="clear"></div>
+</header>
+<!-- content -->
+<div id="container">
+  <!-- content body -->
+  <div id="content">
+    <!-- section 1 -->
+    <section>
+        
+      <!-- La descripción del problema -->
+    </section>
+    <!-- section 2 -->
+    <section id="services" class="last clear">
+            <h1 style="color:#FF9900;text-align: center">El Código</h1>
+              <br>
+            <h4>1. Preprocesamiento de Datos</h4>
+            <p style="text-align: justify">El preprocesamiento de datos se hizo en Spark para ambos modelos por motivos puramente
+              prácticos. Como primer paso, se inicializó la sesión de Spark con la que se trabajará estre
+              proyecto.
+            </p>
+
+            <pre> 
+              <code class="python">
+                from pyspark.sql import SparkSession
+                from pyspark import SparkContext
+                SpSession = SparkSession
+                .builder 
+                .appName("DBA-Spark RF")
+                .getOrCreate()
+                Spcontext=SpSession.sparkContext
+
+                import re
+            </code>
+            </pre>
+            <p style="text-align: justify">A continuación, extraemos los datos de un archivo CSV y se guarda en la memoria de Spark</p>
+            <pre style="font-family:monospace !important" > 
+              <code class="python">
+                bankData=Spcontext.textFile("/FileStore/tables/Data_e2-1.csv")
+                bankData.cache()
+            </code>
+            </pre>
+            <p style="text-align: justify">Seguidamente, se filtra la primera línea, creando así el nuevo rdd llamado dataLines.
+              Adicionalmente, se convierte el atributo de "Balance" hacia flotar y se utiliza la libería
+              regex para discretizar los atributos de mayor a diez años.
+            </p>
+            <pre> 
+              <code class="python">
+                firstLine=bankData.first()
+                dataLines=bankData.filter(lambda x:x !=firstLine)
+                dataLines.count()
+
+                float(bankData.take(2)[1].split(",")[7])
+                re.sub(r'\D','','10+ > < years')
+            </code>
+            </pre>
+            <p> Una vez construido el rdd con el que se trabajará, se pasó a implementar la función que
+              transforma los datos orginiales a variables categóricas que podrán ser procesadas por el algoritmo
+            </p>
+            <pre> 
+              <code class="python">
+                import math
+                from pyspark.ml.linalg import Vectors
+                from pyspark.sql import Row
+                def trasnformToNumeric(inputStr):
+                # Conseguir cada campo por separado
+                attList=inputStr.split(",")
+                # Conversión a decimal el ingreso actual de la persona
+                aincome=float(attList[1])
+                # Ubica a las personas en categorías numéricas según sus años de trabajo
+                yjob=0.0 if attList[2]=="< 1 year" else float(re.sub(r'\D','',attList[2]))
+                # Estados dicotómicos del pago. Si está pagado completamente o no
+                lstatus= 0.0 if attList[0]=="Fully Paid" else 1.0
+                # Estados dicotómicos de tenencia de hipoteca
+                homeM=1.0 if attList[3]=="Home Mortgage" else 0.0
+                # Estados dicotómicos de tenencia de casa propia y renta en categorías diferentes
+                ownH=1.0 if attList[3]=="Own Home" else 0.0
+                rent=1.0 if attList[3]=="Rent" else 0.0
+                # Estados dicotómicos de tenencia de crédito
+                haveM=1.0 if attList[3]=="HaveMortgage" else 0.0
+                yearsch=float(attList[4])
+                # Conversión a decimal el número de cuentas 
+                naccounts=float(attList[5])
+                # Conversión a decimal el saldo
+                balance=float(attList[6])
+                maximum=float(attList[7])
+                values=Row(AINCOME=aincome,YJOB=yjob,MAXI=maximum,
+                        LSTATUS=lstatus,HOMEM=homeM,OWNH=ownH,
+                        RENT=rent,HAVEM=haveM,YEARSCH=yearsch,
+                        NACCOUNTS=naccounts,BALANCE=balance)
+                return values
+            </code>
+          </pre>
+          <p style="text-align: justify"> Finalmente, se ejecuta la función con el rrd creado anteriormente y se crea un DataFrame de Spark
+          </p>
+            <pre> 
+              <code class="python">
+                bankRows=dataLines.map(trasnformToNumeric)
+                bankData=SpSession.createDataFrame(bankRows)
+                bankData.collect()
+            </code>
+            <p style="text-align: justify"> Se saca las correlaciones para asegurar que no haya un valor 
+              no deseada respecto de la variable dependiente
+            </p>
+            </pre>
+            <pre> 
+              <code class="python">
+                for i in bankData.columns:
+                  if not (isinstance(bankData.select(i).take(1)[0][0],str)):
+                    print(i, bankData.stat.corr('LSTATUS',i))
+            </code>
+            </pre>
+            <p style="text-align: justify"> Como siguiente paso, se aplica la técnica de standard scaler a las variables de income, balance
+              max income, number of accounts y years of credit history
+            </p>
+            <pre> 
+              <code class="python">
+                input_col = "AINCOME"
+                output_col = "AINCOMEN"
+                w = Window.partitionBy()
+                mu = mean(input_col).over(w)
+                sigma = stddev(input_col).over(w)
+                abak=bankData.withColumn(output_col, (col(input_col) - mu)/(sigma))
+
+                input_col = "BALANCE"
+                output_col = "BALANCEN"
+                w = Window.partitionBy()
+                mu = mean(input_col).over(w)
+                sigma = stddev(input_col).over(w)
+                abak=abak.withColumn(output_col, (col(input_col) - mu)/(sigma))
+
+                input_col = "MAXI"
+                output_col = "MAXIN"
+                w = Window.partitionBy()
+                mu = mean(input_col).over(w)
+                sigma = stddev(input_col).over(w)
+                abak=abak.withColumn(output_col, (col(input_col) - mu)/(sigma))
+
+                input_col = "NACCOUNTS"
+                output_col = "NACCOUNTSN"
+                w = Window.partitionBy()
+                mu = mean(input_col).over(w)
+                sigma = stddev(input_col).over(w)
+                abak=abak.withColumn(output_col, (col(input_col) - mu)/(sigma))
+
+                input_col = "YEARSCH"
+                output_col = "YEARSCHN"
+                w = Window.partitionBy()
+                mu = mean(input_col).over(w)
+                sigma = stddev(input_col).over(w)
+                abak=abak.withColumn(output_col, (col(input_col) - mu)/(sigma))
+            </code>
+          </pre>
+          <p style="text-align: justify"> Por último, se eliminan del dataframe aquellas columnas originales (aquellas que serán reemplazadas)
+            por el scaler y se guarda el dataframe en un archivo csv para que pueda ser procesado por los scripts 
+            de MRJob y Spark
+          </p>
+          <pre> 
+            <code class="python">
+              drop_list=['AINCOME','BALANCE','NACCOUNTS','MAXI','YEARSCH']
+              processed_data=abak.select([column for column in abak.columns if column not in drop_list])
+              processed_data.write.csv('/FileStore/tables/Data_e2-1.csv')
+            </code>
+          </pre>
+          <br>
+            <h4>2. El Modelo en MRJob</h4>
+            <p style="text-align: justify"> Este modelo se divide en 3 partes. Primeramente, 
+              la función PREDICT() que genera las probabilidades de 0 o 1 dependiendo de un umbral de 
+              probablidades. El parámetro "p_pred" es la probabilidad estimada por la funcion logit() de que la
+              observación perteneza a la categoría de "mal pagador", que correspondería al valor 1 de la variable
+              dependiente. En segundo lugar, la función LOGIT() calcula las predicciones a partir de los pesos 
+              iniciales, el parámetro "pesos" es la suma se los bias y los betas almacenada en una lista y el
+              parámetro "variables" es la lista de las variables de entrenamiento. Por último, la función ACCURACY()
+              genera la métrica de accuracy para evaluar el performance del modelo.
+            </p>
+
+            <pre> 
+              <code class="python">
+            from mrjob.job import MRJob
+            from mrjob.step import MRStep
+            import numpy as np
+            import re
+            import random
+            import pandas as pd
+            from sklearn.metrics import log_loss
+            from sklearn.model_selection import train_test_split
+
+              #INTRODUCCION PARAR CORRER EL CODIGO
+
+              # Escribir en el cmd 'python demo.py train.csv'
+              # Si desea utilizar otra data de entrenamiento se escribe 'python demo.py'+'nuevo_archivo'
+              # Definir el numero de 'iteraciones'
+              # Definir el 'learning rate'(lr)
+              # Definir la cantidad de variables de entrada 'n_variables'
+
+              def predict(p_pred,threshold=0.5):
+                  return np.array([1 if y>threshold else 0 for y in p_pred])
+
+
+              def accuracy(y_pred,y):
+                  error_prediccion = [ y_pred[i]==y[i] for i in range(0,len(y_pred))]
+                  return sum(error_prediccion)/len(y_pred)
+
+              def logit(variables,pesos):
+                  variables=np.array(variables)
+                  intercepto = np.ones((variables.shape[0], 1))
+                  variables =np.hstack((intercepto, variables))
+                  pesos = np.array(pesos)
+
+                  regresion=[sum(z) for z in pesos.T * variables]
+                  output = [1/(1+np.exp(-reg)) for reg in regresion]
+                  return np.array(output)
+
+
+              #FUNCIONES PRINCIPALES
+              # - obtencion_datos permite procesar de manera inicial los datos de entrada
+              # - Los datos son guardados en la variables data_x (las caracteristicas) 
+              y data_y(variable de prediccion)
+
+              class obtencion_datos(MRJob):
+                  # FUNCIONES UTILIZADAS
+                  # mapper_datos(): PROCESAMIENTO DE DATOS PARA 
+                  GENERAR LA PREDICCION APARTIR DE UNOS w INICIALES
+                  # reducer_valores(): AGRUPA LOS DATOS DE VARIABLES (X), 
+                  LA CATEGORIA (Y) y lA PREDICCION (p_pred)
+
+                  def mapper_datos(self, _, line):
+                      #EXTRA LAS VARIABLES Y LA CLASE DE LOS DATOS DE ENTRADA
+                      #La ultima columna es la categoria a predecir
+
+                      data=line.replace('\n','').split(',')
+                      if data[0]!='YJOB':
+
+                          #VARIABLE
+                          X=[float(i) for i in data[0:-1]]
+                          #CLASE
+                          y=float(data[-1])
+
+                          yield None, (X, y)
+                      else:
+                          pass
+
+                  def reducer_valores(self, key, values):
+                      #ALMACENA X, y, p_pred de todo el dataset las cuales seran 
+                      utilizadas para calcular las gradientes
+                      for i in values:
+                          #VARIABLES
+                          #X = i[0] 
+
+                          #p_pred = i[1] #PREDICCION DE LA CATEGORIA
+                          #VALOR OBJETIVO A PREDECIR
+                          #y = i[2] 
+                          #VARIABLES
+                          data_X.append(i[0])
+                          #VALOR OBJETIVO A PREDECIR
+                          data_y.append(i[1])
+                          #prob_pred_train.append(p_pred)
+
+
+                  def steps(self):
+                  return [MRStep(mapper=self.mapper_datos,
+                                reducer = self.reducer_valores)]
+
+
+              if __name__ == '__main__':
+                  # PARAMETROS DE INICIALIZACION DEL ALGORITMO
+                  # lr: learning rate
+                  # w: pesos de la regresion logistica (betas)
+                  # n_interaciones : numero de iteraciones en el descenso de gradiente
+                  # n_variables : cantidad de variables independientes
+
+
+                  # INICIALIZACION DE PESOS Y PARAMETROS
+                  n_iteraciones = 200
+                  n_variables = 11
+                  global lr; global w
+                  w=[0.0]*n_variables
+                  lr=0.01
+
+                  # Se genera para guardar la función de coste(entropia cruzada)
+                  lista_errores=[] 
+                    por iteracion
+                  lista_accuracy_train=[] 
+                  # Se genera para guardar el accuracy de la prediccion por iteracion
+                  lista_accuracy_test=[]
+                  #OBTENCION DE LOS DATOS
+                  global data_X; global data_y; global prob_pred_train
+                  data_X=[]
+                  data_y=[]
+                  obtencion_datos.run()
+                  data_X=np.array(data_X)
+                  data_y=np.array(data_y)
+
+                  #SE DIVIDE LA DATA EN TRAIN Y TEST 80/20
+                  train_test_split
+
+                  X_train, X_test, y_train, y_test = train_test_split(data_X, data_y, 
+                  test_size=0.20, random_state=20)
+
+                  #ALGORITMO DE DESCENSO DEL GRADIENTE
+                  for iteracion in range(0,n_iteraciones):
+
+                      #PREDICCION CON PESOS INICIALES (REGRESION LOGISTICA)
+                      prob_pred_train= logit(X_train,w)
+
+                      #ACTUALIZACION DE GRADIENTES DE LOS PESOS Y EL BIAS (w0)
+                      # gradiente del error en funcion de los pesos
+                      g_w = (np.dot((prob_pred_train-y_train).T,X_train))/len(prob_pred_train)
+                      # gradiente del error en funcion del bias
+                      g_bias = np.mean(np.array((prob_pred_train-y_train)))
+
+                      #ACTUALIZACION DE LOS PESOS (PARAMETROS DE LA REGRESION LOGISTICA)
+                      for i in range(0,len(w)):
+                          if i == 0:
+                              w[i] = w[i]-lr*g_bias
+                          else:
+                              w[i] = w[i]-lr*g_w[i-1]
+
+                      #PREDICCION CON PESOS ACTUALIZADOS
+                      prob_pred_train= logit(X_train,w)
+                      prob_pred_test= logit(X_test,w)
+
+                      #CALCULO DE ERROR DE ENTROPIA CRUZADA
+                      # entropia cruzada
+                      ec= log_loss(y_train,np.array([[1-i,i] for i in prob_pred_train]))
+                      
+
+                      #CALCULO DE ACCURACY
+                      prediccion_train=predict(prob_pred_train)
+                      prediccion_test=predict(prob_pred_test)
+
+                      accuracy_train = accuracy(prediccion_train,y_train)
+                      accuracy_test = accuracy(prediccion_test,y_test)
+
+                      #ALMACENAMIENTO DE ERRORES EN UNA VARIABLE
+
+                      lista_errores.append(ec)
+                      lista_accuracy_train.append(accuracy_train)
+                      lista_accuracy_test.append(accuracy_test)
+
+
+
+                  #GUARDADO DE RESULTADOS DE PREDICCIONES TRAIN Y  TEST
+                  resultados={'y_pred':prediccion_train,'prob_1':prob_pred_train,'y':y_train}
+                  resultados=pd.DataFrame(resultados)
+                  resultados.to_csv('resultados_train.csv',index=False)
+
+                  resultados={'y_pred':prediccion_test,'prob_1':prob_pred_test,'y':y_test}
+                  resultados=pd.DataFrame(resultados)
+                  resultados.to_csv('resultados_test.csv',index=False)
+
+                  #GUARDADO DE PESOS CALCULADOS
+                  pesos=pd.DataFrame({'pesos':w})
+                  pesos.to_csv('pesos.csv',index=False)
+
+                  #GUARDADO DEL COSTE (ENTROPIA CRUZADA)
+                  entropia=pd.DataFrame({'iteracion':[i for i in range(0,len(lista_errores))],
+                  'errores':lista_errores})
+                  entropia.to_csv('coste.csv',index=False)
+
+                  #GUARDADO DE ACCURACY TRAIN Y TEST
+                  acc=pd.DataFrame({'iteracion':[i for i in range(0,len(lista_accuracy_train))],
+                  'errores_train':lista_accuracy_train})
+                  acc.to_csv('accuracy_train.csv',index=False)
+
+                  acc=pd.DataFrame({'iteracion':[i for i in range(0,len(lista_accuracy_test))],
+                  'errores_test':lista_accuracy_test})
+                  acc.to_csv('accuracy_test.csv',index=False)
+
+                  print('ACCURACY TRAIN: '+str(accuracy_train))
+                  print('ACCURACY TEST: '+str(accuracy_test))
+              </code>
+            </pre>
+            <br>
+            <h4>3. El Modelo en Spark</h4>
+            <pre> 
+              <code class="python">
+                #Iniciar la sesión de Spark
+                from pyspark.sql import SparkSession
+                from pyspark import SparkContext
+                SpSession=SparkSession\
+                    .builder \
+                    .appName("DBA-Spark RF")\
+                    .getOrCreate()
+                Spcontext=SpSession.sparkContext
+
+                # Cargar los datos preprocesados en el paso 1
+                bankData=Spcontext.textFile("Datapreprocesada.csv")
+                # Guardar los datos en la memoria
+                bankData.cache()
+
+                # Construir el rdd sin la primera fila del dataset
+                # El firstline contiene las cabeceras
+
+                firstLine=bankData.first()
+                dataLines=bankData.filter(lambda x:x !=firstLine)
+                dataLines.count()
+
+
+                import math
+                from pyspark.ml.linalg import Vectors
+                from pyspark.sql import Row
+
+                # Transformar todos los atributos pre procesados a decimal
+                def trasnformToNumeric(inputStr):
+                    attList=inputStr.split(",")
+                    values=Row(YJOB=float(attList[0]), LSTATUS=float(attList[1]),HOMEM=float(attList[2]),
+                    OWNH=float(attList[3]),RENT=float(attList[4]),HAVEM=float(attList[5]),
+                    AINCOMEN=float(attList[6]),BALANCEN=float(attList[7]),MAXIN=float(attList[8]),
+                    NACCOUNTSN=float(attList[9]),YEARSCHN=float(attList[10]))
+                    return values
+
+                # Ejecutar la transformación a los datos
+                bankRows=dataLines.map(trasnformToNumeric)
+                # Creación del dataframe de Spark para el algoritmo
+                bankData=SpSession.createDataFrame(bankRows)
+
+                bankData.collect()
+
+                # Generar reporte de correlaciones
+                for i in bankData.columns:
+                    if not (isinstance(bankData.select(i).take(1)[0][0],str)):
+                        print(i, bankData.stat.corr('LSTATUS',i))
+
+                # Generar las etiquetas para las filas
+                def transformLabeledpoint(row):
+                    lp=(row['LSTATUS'],Vectors.dense([row['YJOB'],
+                    row['HOMEM'],row['OWNH'],row['RENT'],row['HAVEM'],
+                    row['AINCOMEN'],row['BALANCEN'],row['MAXIN'],
+                    row['NACCOUNTSN'],row['YEARSCHN']]))
+                    return lp
+
+                # Ejecutar mapear el rdd con la función anterior
+                bankLp=bankData.rdd.map(transformLabeledpoint)
+                bankLp.collect()
+                # Crear el dataframe de Spark con la etiqueta y características que recibirá el algoritmo
+                bankDF=SpSession.createDataFrame(bankLp,["label","features"])
+                # Mostrar el nuevo dataframe
+                bankDF.select("label","features").show(10)
+
+                # Reservar un porcentaje de los datos para testing y utilizar el resto en training
+                (trainingd,testd)=bankDF.randomSplit([0.7,0.3])
+                trainingd.count()
+
+                from pyspark.ml.classification import LogisticRegression
+
+                # Entrenamiento de la regresión logística con 10 iteraciones
+                logismodel=LogisticRegression(labelCol='label',featuresCol='features',
+                maxIter=10,family='binomial')
+                logismodels=logismodel.fit(trainingd)
+
+                # Generación de predicciones
+                predictions=logismodels.transform(trainingd)
+
+                from pyspark.ml.evaluation import BinaryClassificationEvaluator
+                evaluator=BinaryClassificationEvaluator(rawPredictionCol="prediction",labelCol="label")
+                evaluator.evaluate(predictions)
+
+                # Generación de predicciones
+                predictions.groupBy("label","prediction").count().show()
+
+                from pyspark.mllib.evaluation import MulticlassMetrics
+
+                ok=predictions.select('prediction','label')
+                metrics=MulticlassMetrics(ok.rdd)
+              </code>
+            </pre>
+            <script src="highlight.pack.js"></script>
+            <script>hljs.initHighlightingOnLoad();</script>
+    </section>
+  </div>
+  <!-- right column -->
+  <aside id="right_column">
+    <h2 class="title">Contenidos</h2>
+    <nav>
+      <ul>
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="problem.html">El Problema</a></li>
+        <li><a style="color:#FF9900">El Código</a></li>
+        <li><a href="performance.html">Performance & Resultados</a></li>
+        <li><a href="conclusions.html">Las Conclusiones</a></li>
+        <li><a href="resources.html">Los Recursos</a ></li>
+      </ul>
+    </nav>
+  </aside>
+  <!-- / content body -->
+  <div class="clear"></div>
+</div>
+</body>
+</html>
