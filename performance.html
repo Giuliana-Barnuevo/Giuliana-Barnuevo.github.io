@@ -10,7 +10,7 @@
 <header id="header" class="clear">
   <div id="hgroup">
     <h1><a href="#">Clasificación De Buenos Pagadores vs Malos Pagadores:</a></h1>
-    <h2>Una aplicación en el contexto de Big Data</h2>
+    <h1>Una aplicación en el contexto de Big Data</h1>
   </div>
   <nav>
   </nav>
@@ -28,7 +28,77 @@
     <!-- section 2 -->
     <section id="services" class="last clear">
             <h2>Perfomance & Resultados</h2>
-            <p>Hello Ryu, bienvenido a mi pestaña de resultados</p>
+
+            <h2>Cuadro de Resultados Generales</h2>
+              <p style="text-align: justify"> Los modelos fueron entrenados con 100 iteraciones cada uno, de modo que pudieran ser comparables.
+              Como se muestra en la tabla, el modelo entrando por MRJob tiene un performance ligeramente mejor al modelo entrenado por Spark.
+              Esto puede deberse a diferentes causas. Una de ellas por la forma en la que se hace la división de los datos pero también se debe
+              a que existen muchas maneras de hacer el descenso de la gradiente. </p>
+              <table>
+                <tr>
+                  <th>Modelo</th>
+                  <th>Iteraciones</th>
+                  <th>Accuracy</th>    
+                </tr>
+                <tr>
+                  <td>MRJob</td>
+                  <td>100</td>    
+                  <td>76.70%</td>
+                </tr>
+                <tr>
+                  <td>Spark</td>
+                  <td>100</td>    
+                  <td>77.63%</td>
+                </tr>
+              </table>
+
+              <h2>Cuadro de Correlaciones</h2>
+              <table>
+                <tr>
+                  <th>Variable</th>
+                  <th>Correlación</th>  
+                </tr>
+                <tr>
+                  <td>LSTATUS</td>
+                  <td>1.0</td>    
+                </tr>
+                <tr>
+                  <td>HOMEM</td>
+                  <td>-0.05</td>    
+                </tr>
+                <tr>
+                  <td>OWNH </td>
+                  <td>0.0015</td>    
+                </tr>
+                <tr>
+                  <td>RENT</td>
+                  <td>0.05</td>    
+                </tr>
+                <tr>
+                  <td>HAVEM</td>
+                  <td>-0.009</td>    
+                </tr>
+                <tr>
+                  <td>AINCOMEN</td>
+                  <td>-0.07</td>    
+                </tr>
+                <tr>
+                  <td>BALANCEN</td>
+                  <td>-0.008</td>    
+                </tr>
+                <tr>
+                  <td>MAXIN</td>
+                  <td>-0.008</td>    
+                </tr>
+                <tr>
+                  <td>NACCOUNTSN</td>
+                  <td> 0.014</td>    
+                </tr>
+                <tr>
+                  <td>YEARSCHN</td>
+                  <td>-0.030</td>    
+                </tr>
+              </table>
     </section>
   </div>
   <!-- right column -->
