@@ -4,6 +4,7 @@
 <title>EL PROBLEMA</title>
 <meta charset="UTF-8">
 <link rel="stylesheet" href="styles/layout.css" type="text/css">
+<link rel="stylesheet" href="styles/tablas.css" type="text/css">
 <!--[if lt IE 9]><script src="scripts/html5shiv.js"></script><![endif]-->
 </head>
 <body>
@@ -30,7 +31,7 @@
             <h2 style="color:#FF9900" >Perfomance & Resultados</h2>
 
 
-            <section>
+            <div class="main-container">
               <p style="text-align: justify"> Los modelos fueron entrenados con 100 iteraciones cada uno, de modo que pudieran ser comparables.
               Como se muestra en la tabla, el modelo entrando por MRJob tiene un performance ligeramente mejor al modelo entrenado por Spark.
               Esto puede deberse a diferentes causas. Una de ellas por la forma en la que se hace la división de los datos pero también se debe
@@ -54,10 +55,13 @@
                   <td>77.63%</td>
                 </tr>
               </table>
-            </section>
+            </div>
 
-              <section>
-                <p style="text-align: justify"> Como parte del estudio para re </p>
+              <div class="main-container">
+                <p style="text-align: justify"> Como parte del estudio para optimizar el perfomance de los
+                modelos, se sacaron las correlaciones de las variables. De esto podemos observar que las variables
+                dependientes tienen bajas correlaciones respecto de la variable depedendiente. En consecuencia, sería 
+                beneficioso incluir nuevas variables de la entidades financieras a fin de conseguir una mejor predicción </p>
                   <br>
               <h4>Cuadro de Correlaciones</h4>
               <table>
@@ -107,7 +111,7 @@
                 </tr>
               </table>
               <br>
-            </section>
+            </div>
     </section>
   </div>
   <!-- right column -->
