@@ -115,6 +115,33 @@
               </table>
               <br>
             </div>
+            <p style="text-align: justify"> En la matriz de confusión podemos observar que el algoritmo tiene la 
+              capacidad de predecir de manera adecuada los buenos pagadores pero no los malos pagadores. Esto puede 
+              deberse tanto a la baja correlación presentada en el cuadro anterior o a la limitada cantidad de malos pagadores 
+              que se encuentran en el dataset.
+              </p>
+            <h4>Matriz de Confusión Spark</h4>
+            <div class="main-container">
+            <table>
+              <thead>
+              <tr>
+                <th>           </th>
+                <th>Predicción (1) </th>
+                <th>Predicción (0) </th>    
+              </tr>
+            </thead>
+              <tr>
+                <td>Valor Actual (1)</td>
+                <td>2</td>    
+                <td>14961</td>
+              </tr>
+              <tr>
+                <td>Valor Actual (0)</td>
+                <td>4</td>    
+                <td>751935</td>
+              </tr>
+            </table>
+          </div>
     </section>
   </div>
   <!-- right column -->
