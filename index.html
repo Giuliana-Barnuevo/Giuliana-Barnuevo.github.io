@@ -1,69 +1,310 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<!--[if lt IE 8 ]><html class="no-js ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="no-js ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 8)|!(IE)]><!--><html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-<title>Pay me Project</title>
-<meta charset="UTF-8">
-<link rel="stylesheet" href="styles/layout.css" type="text/css">
-<!--[if lt IE 9]><script src="scripts/html5shiv.js"></script><![endif]-->
+
+   <!--- Basic Page Needs
+   ================================================== -->
+   <meta charset="utf-8">
+	<title>Giuliana Barnuevo | Analytics & Data Science</title>
+	<meta name="description" content="">
+	<meta name="author" content="Giuliana Barnuevo">
+
+   <!-- Mobile Specific Metas
+   ================================================== -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<!-- CSS
+    ================================================== -->
+   <link rel="stylesheet" href="css/default.css">
+	<link rel="stylesheet" href="css/layout.css">
+   <link rel="stylesheet" href="css/media-queries.css">
+   <link rel="stylesheet" href="css/magnific-popup.css">
+
+   <!-- Script
+   ================================================== -->
+	<script src="js/modernizr.js"></script>
+
+   <!-- Favicons
+	================================================== -->
+	<link rel="shortcut icon" href="favicon.png" >
+
 </head>
+
 <body>
-<header id="header" class="clear">
-  <div id="hgroup">
-    <h1><a href="#">Clasificación De Buenos Pagadores vs Malos Pagadores:</a></h1>
-    <h1>Una aplicación en el contexto de Big Data</h1>
-  </div>
-  <nav>
-  </nav>
-  <div class="clear"></div>
-</header>
-<!-- content -->
-<div id="container">
-  <!-- content body -->
-  <div id="content">
-    <!-- section 1 -->
-    <section>
-        
-      <!-- La descripción del problema -->
-    </section>
-    <!-- section 2 -->
-    <section id="services" class="last clear">
-            <h1 style = "text-align:center;color: #FF9900"" >Abstract</h1>
-            <p style = "text-align:justify">En el contexto actual, la importancia de la reactivación de la economía pone especial presión 
-              en las entidades financieras para liberar la mayor cantidad de dinero posible.
-              Sin embargo, la incertidumbre que se experimenta a nivel mundial en la mayoría de sector y 
-              la elevada cantidad de solicitudes para préstamos solicitados en los últimos meses, requieren el
-              procesamiento de grandes cantidades de datos en tiempo reducido para poder tomar decisiones a tiempo.
-              El presente algoritmo rescata el abordaje clásico de calificación financiera hecho a través de una 
-              regresión logística y lo adapta a un entorno de Big Data, realizando un análisis comparativo entre las
-              liberías de Python MRJobs y Spark.
+
+   <!-- Header
+   ================================================== -->
+   <header id="home">
+
+      <nav id="nav-wrap">
+
+         <a class="mobile-btn" href="#nav-wrap" title="Show navigation">Mostrar Navegación</a>
+	      <a class="mobile-btn" href="#" title="Hide navigation">Ocultar Navegación</a>
+
+         <ul id="nav" class="nav">
+            <li class="current"><a class="smoothscroll" href="#home">Inicio</a></li>
+            <li><a class="smoothscroll" href="#about">Acerca de mí</a></li>
+            <li><a class="smoothscroll" href="#portfolio">Portafolio</a></li>
+         </ul> <!-- end #nav -->
+
+      </nav> <!-- end #nav-wrap -->
+
+      <div class="row banner">
+         <div class="banner-text">
+            <h1 class="responsive-headline">Giuliana Barnuevo</h1>
+            <h3>Estudiante de Ingeniería de la Información de la Universidad del Pacífico 
+               interesada en las áreas de 
+               <span>Analytics</span> y <span>Data Science</span> 
+               con experiencia en 
+                <span>Investigación</span> y <span>Fintech</span> .</h3>
+            <hr />
+            <ul class="social">
+               <li><a href="https://www.linkedin.com/in/giuliana-barnuevo-data-science"><i class="fa fa-linkedin"></i></a></li>
+               <li><a href="https://github.com/Giuliana-Barnuevo/Portafolio_es"><i class="fa fa-github"></i></a></li>
+               <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+
+            </ul>
+         </div>
+      </div>
+
+      <p class="scrolldown">
+         <a class="smoothscroll" href="#about"><i class="icon-down-circle"></i></a>
+      </p>
+
+   </header> <!-- Header End -->
+
+
+   <!-- About Section
+   ================================================== -->
+   <section id="about">
+
+      <div class="row">
+
+         <div class="three columns">
+
+            <img class="profile-pic"  src="images/profilepic.jpg" alt="" />
+
+         </div>
+
+         <div class="nine columns main-col">
+
+            <h2>Acerca de Mí</h2>
+
+            <p> Soy una estudiante de décimo ciclo de la carrera de Ingeniería de la Información en la Universidad 
+               del Pacífico. Poseo formación en el campo de Inteligencia Artificial, enfocado en temas de Machine
+               Learning. Actualmente, tengo experiencia en construcción de modelos predictivos para el sector de 
+               Banca y servicios financieros. Adicionalmente, tengo interés en el tratamiento y modelamiento de datos
+               georreferenciados. Tengo afinidad por los equipos multidisciplinarios debido a la amplia visión que 
+               ofrecen y, aunque a veces la barrera técnica puede ser un desafío, he aprendido a valorar el proceso de
+               comunicación y aprendizaje que se da entre un equipo con conocimientos distintos. 
             </p>
-            <p style = "text-align:justify"> 
-            </p>
-    </section>
-  </div>
-  <!-- right column -->
-  <aside id="right_column">
-    <h2 class="title">Contenidos</h2>
-    <nav>
-      <ul>
-        <li><a style="color:#FF9900">Inicio</a></li>
-        <li><a href="problem.html">El Problema</a></li>
-        <li><a href="code.html">El Código</a></li>
-        <li><a href="performance.html">Performance & Resultados</a></li>
-        <li><a href="conclusions.html">Las Conclusiones</a></li>
-        <li><a href="resources.html">Los Recursos</a ></li>
-      </ul>
-    </nav>
-    <h2 class="title">Integrantes</h2>
-      <ul>
-        <li><a>Williams Fu</a></li>
-        <li><a>Alvaro Ravichagua</a></li>
-        <li><a>Ryusei Uenishi</a></li>
-        <li><a>Giuliana Barnuevo</a></li>
-      </ul>
-  </aside>
-  <!-- / content body -->
-  <div class="clear"></div>
-</div>
+
+            <div class="row">
+
+               <div class="columns contact-details">
+
+                  <h2>Información de Contacto</h2>
+                  <p class="address">
+						   <span>Giuliana Barnuevo</span><br>
+						   <span>Av. de los Ingenieros 146<br>
+						         Santiago de Surco, Lima 15023 Perú
+                     </span><br>
+						   <span>(+51) 940 294 706</span><br>
+                     <span>giubarnuevo@gmail.com</span>
+					   </p>
+
+               </div>
+
+               <div class="columns download">
+                  <p>
+                     <a href="#" class="button"><i class="fa fa-download"></i>Descargar CV</a>
+                  </p>
+               </div>
+
+            </div> <!-- end row -->
+
+         </div> <!-- end .main-col -->
+
+      </div>
+
+   </section> <!-- About Section End-->
+
+   <!-- Portfolio Section
+   ================================================== -->
+   <section id="portfolio">
+
+      <div class="row">
+
+         <div class="twelve columns collapsed">
+
+            <h1>Check Out Some of My Works.</h1>
+
+            <!-- portfolio-wrapper -->
+            <div id="portfolio-wrapper" class="bgrid-quarters s-bgrid-thirds cf">
+
+          	   <div class="columns portfolio-item">
+                  <div class="item-wrap">
+
+                     <a href="#modal-01" title="">
+                        <img alt="" src="images/portfolio/politics.jpg">
+                        <div class="overlay">
+                           <div class="portfolio-item-meta">
+          					      <h5>Políticos</h5>
+                              <p>Web Scraping con Python</p>
+          					   </div>
+                        </div>
+                        <div class="link-icon"><i class="icon-plus"></i></div>
+                     </a>
+
+                  </div>
+          		</div> <!-- item end -->
+
+               <div class="columns portfolio-item">
+                  <div class="item-wrap">
+
+                     <a href="#modal-02" title="">
+                        <img alt="" src="images/portfolio/console.jpg">
+                        <div class="overlay">
+                           <div class="portfolio-item-meta">
+          					      <h5>Console</h5>
+                              <p>Web Development</p>
+          					   </div>
+                        </div>
+                        <div class="link-icon"><i class="icon-plus"></i></div>
+                     </a>
+
+                  </div>
+          		</div> <!-- item end -->
+
+               <div class="columns portfolio-item">
+                  <div class="item-wrap">
+
+                     <a href="#modal-03" title="">
+                        <img alt="" src="images/portfolio/judah.jpg">
+                        <div class="overlay">
+                           <div class="portfolio-item-meta">
+          					      <h5>Judah</h5>
+                              <p>Webdesign</p>
+          					   </div>
+                        </div>
+                        <div class="link-icon"><i class="icon-plus"></i></div>
+                     </a>
+
+                  </div>
+          		</div> <!-- item end -->
+
+            </div> <!-- portfolio-wrapper end -->
+
+         </div> <!-- twelve columns end -->
+
+
+         <!-- Modal Popup
+	      --------------------------------------------------------------- -->
+
+         <div id="modal-01" class="popup-modal mfp-hide">
+
+		      <img class="scale-with-grid" src="images/portfolio/politics.jpg" alt="" />
+
+		      <div class="description-box">
+			      <h4>Obtener información de Políticos</h4>
+			      <p>Se obtuvo información de candidatos al congresos a través del portal de datos
+                  abiertos del Perú: Infogob.
+               </p>
+               <span class="categories"><i class="fa fa-tag"></i>Web Scraping, Python</span>
+		      </div>
+
+            <div class="link-box">
+               <a href="http://www.behance.net">¡Cuéntame más!</a>
+               <a href="http://www.behance.net">¡Muéstrame el código!</a>
+		         <a class="popup-modal-dismiss">Cerrar</a>
+            </div>
+
+	      </div><!-- modal-01 End -->
+
+         <div id="modal-02" class="popup-modal mfp-hide">
+
+		      <img class="scale-with-grid" src="images/portfolio/modals/m-console.jpg" alt="" />
+
+		      <div class="description-box">
+			      <h4>Console</h4>
+			      <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit.</p>
+               <span class="categories"><i class="fa fa-tag"></i>Branding, Web Development</span>
+		      </div>
+
+            <div class="link-box">
+               <a href="http://www.behance.net">Details</a>
+		         <a class="popup-modal-dismiss">Close</a>
+            </div>
+
+	      </div><!-- modal-02 End -->
+
+         <div id="modal-03" class="popup-modal mfp-hide">
+
+		      <img class="scale-with-grid" src="images/portfolio/modals/m-judah.jpg" alt="" />
+
+		      <div class="description-box">
+			      <h4>Judah</h4>
+			      <p>Proin gravida nibh vel velit auctor aliquet. Aenean sollicitudin, lorem quis bibendum auctor, nisi elit consequat ipsum, nec sagittis sem nibh id elit.</p>
+               <span class="categories"><i class="fa fa-tag"></i>Branding</span>
+		      </div>
+
+            <div class="link-box">
+               <a href="http://www.behance.net">Details</a>
+		         <a class="popup-modal-dismiss">Close</a>
+            </div>
+
+	      </div><!-- modal-03 End -->
+
+ 
+
+	      </div><!-- modal-01 End -->
+
+
+      </div> <!-- row End -->
+
+   </section> <!-- Portfolio Section End-->
+
+   <!-- footer
+   ================================================== -->
+   <footer>
+
+      <div class="row">
+
+         <div class="twelve columns">
+
+            <ul class="social-links">
+               <li><a href="https://www.linkedin.com/in/giuliana-barnuevo-data-science"><i class="fa fa-linkedin"></i></a></li>
+               <li><a href="https://github.com/Giuliana-Barnuevo/Portafolio_es"><i class="fa fa-github"></i></a></li>
+               <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+            </ul>
+
+            <ul class="copyright">
+               <li>&copy; Copyright 2014 CeeVee</li>
+               <li>Design by <a title="Styleshout" href="http://www.styleshout.com/">Styleshout</a></li>   
+            </ul>
+
+         </div>
+
+         <div id="go-top"><a class="smoothscroll" title="Back to Top" href="#home"><i class="icon-up-open"></i></a></div>
+
+      </div>
+
+   </footer> <!-- Footer End-->
+
+   <!-- Java Script
+   ================================================== -->
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+   <script>window.jQuery || document.write('<script src="js/jquery-1.10.2.min.js"><\/script>')</script>
+   <script type="text/javascript" src="js/jquery-migrate-1.2.1.min.js"></script>
+
+   <script src="js/jquery.flexslider.js"></script>
+   <script src="js/waypoints.js"></script>
+   <script src="js/jquery.fittext.js"></script>
+   <script src="js/magnific-popup.js"></script>
+   <script src="js/init.js"></script>
+
 </body>
+
 </html>
