@@ -332,3 +332,45 @@ footer {
   background-color: #1B3A57;
   color: #FFF;
 }
+
+.h.hero {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* alinea todo hacia la izquierda */
+  gap: 1.5rem; /* reduce el espacio entre texto y foto */
+  padding: 2.5rem 0;
+  flex-wrap: wrap;
+}
+
+.profile {
+  width: 160px;  /* un poco más grande */
+  height: 160px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+  margin-left: 1rem; /* acerca más la imagen al texto */
+}
+
+.hero-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .profile {
+    margin-left: 0;
+    margin-top: 1.5rem;
+  }
+}
+
